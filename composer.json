@@ -17,7 +17,7 @@
 	},
 	"autoload" : {
 		"psr-4" : {
-			"perf\\Navigation\\" : "lib/perf/navigation/"
+			"perf\\Navigation\\" : "lib/perf/Navigation/"
 		}
 	}
 }
