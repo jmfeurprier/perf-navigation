@@ -21,11 +21,25 @@ class Breadcrumbs implements \IteratorAggregate, \Countable
      *
      * @param string $title
      * @param null|string $link
+     * @param {string:mixed} $attributes
      * @return Breadcrumbs Fluent return.
      */
-    public function add($title, $link = null)
+    public function add($title, $link = null, array $attributes = array())
     {
-        $this->nodes[] = BreadcrumbsNode::create($title, $link);
+        $node = BreadcrumbsNode::create($title, $link, $attributes);
+
+        return $this->addNode($node);
+    }
+
+    /**
+     *
+     *
+     * @param BreadcrumbsNode $node
+     * @return Breadcrumbs Fluent return.
+     */
+    public function addNode(BreadcrumbsNode $node)
+    {
+        $this->nodes[] = $node;
 
         return $this;
     }
