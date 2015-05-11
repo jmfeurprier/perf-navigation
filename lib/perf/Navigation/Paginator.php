@@ -1,6 +1,8 @@
 <?php
 
-namespace perf;
+namespace perf\Navigation;
+
+use perf\Typing\Type;
 
 /**
  * This class helps computing the different page indexes (first, previous, next, etc.) related to pagination.
@@ -8,6 +10,8 @@ namespace perf;
  */
 class Paginator
 {
+
+    const FIRST_PAGE_DEFAULT = 1;
 
     /**
      * Total number of items to paginate.
@@ -75,7 +79,7 @@ class Paginator
      * @return Paginator
      * @throws \InvalidArgumentException
      */
-    public static function create($itemCount, $itemsPerPage, $currentPage, $firstPage = 1)
+    public static function create($itemCount, $itemsPerPage, $currentPage, $firstPage = self::FIRST_PAGE_DEFAULT)
     {
         return new self($itemCount, $itemsPerPage, $currentPage, $firstPage);
     }
@@ -92,9 +96,17 @@ class Paginator
      */
     private function __construct($itemCount, $itemsPerPage, $currentPage, $firstPage)
     {
-        $this->assertGreaterOrEquals('item count', 0, $itemCount);
-        $this->assertGreaterOrEquals('items per page', 1, $itemsPerPage);
-        $this->assertInteger('first page', $firstPage);
+        Type::mustBe('int', $itemCount, 'item count');
+        Type::mustBe('int', $itemsPerPage, 'items per page');
+        Type::mustBe('int', $firstPage, 'first page');
+
+        if ($itemCount < 0) {
+            throw new \InvalidArgumentException("Provided item count must be greater or equal to 0.");
+        }
+
+        if ($itemsPerPage < 1) {
+            throw new \InvalidArgumentException("Provided items per page must be greater or equal to 1.");
+        }
         
         $this->itemCount    = $itemCount;
         $this->itemsPerPage = $itemsPerPage;
@@ -106,54 +118,28 @@ class Paginator
     }
 
     /**
-     *
-     *
-     * @param string $parameter
-     * @param int $threshold
-     * @param int $value
-     * @return void
-     * @throws \InvalidArgumentException
-     */
-    private function assertGreaterOrEquals($parameter, $threshold, $value)
-    {
-        $this->assertInteger($parameter, $value);
-
-        if ($value < $threshold) {
-            $message = "Provided {$parameter} is not greater or equal to {$value}.";
-
-            throw new \InvalidArgumentException($message);
-        }
-    }
-
-    /**
      * Alters the value of current page index.
      *
-     * @param int $currentPage current page to be shown.
+     * @param int $currentPage Current page.
      * @return Paginator Fluent return.
      * @throws \InvalidArgumentException
      */
     public function setCurrentPage($currentPage)
     {
-        $this->assertInteger('current page', $currentPage);
+        Type::mustBe('int', $currentPage, 'current page');
 
-        if ($currentPage < $this->firstPage) {
-            throw new \InvalidArgumentException('Provided current page is lower than first page.');
-        }
-
-        if ($currentPage > $this->lastPage) {
-            throw new \InvalidArgumentException('Provided current page is greater than last page.');
-        }
+        $currentPage = $this->fixPage($currentPage);
 
         $this->currentPage = $currentPage;
 
         if ($this->currentPage > $this->firstPage) {
-            $this->previousPage = $this->currentPage - 1;
+            $this->previousPage = ($this->currentPage - 1);
         } else {
             $this->previousPage = null;
         }
 
         if ($this->currentPage < $this->lastPage) {
-            $this->nextPage = $this->currentPage + 1;
+            $this->nextPage = ($this->currentPage + 1);
         } else {
             $this->nextPage = null;
         }
@@ -164,18 +150,21 @@ class Paginator
     /**
      *
      *
-     * @param string $parameter
-     * @param int $value
-     * @return void
+     * @param int $page
+     * @return int
      * @throws \InvalidArgumentException
      */
-    private function assertInteger($parameter, $value)
+    private function fixPage($page)
     {
-        if (!is_int($value)) {
-            $message = "Provided {$parameter} is not an integer.";
-
-            throw new \InvalidArgumentException($message);
+        if ($page < $this->firstPage) {
+            return $this->firstPage;
         }
+
+        if ($page > $this->lastPage) {
+            return $this->lastPage;
+        }
+
+        return $page;
     }
 
     /**
@@ -232,6 +221,7 @@ class Paginator
      * Returns the index of the previous page.
      *
      * @return int
+     * @throws \RuntimeException
      */
     public function getPreviousPage()
     {
@@ -256,6 +246,7 @@ class Paginator
      * Returns the index of the next page (may be equal to current page index, if current page is the last page).
      *
      * @return int
+     * @throws \RuntimeException
      */
     public function getNextPage()
     {

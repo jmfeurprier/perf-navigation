@@ -11,7 +11,7 @@ class BreadcrumbsNodeTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testConstructorWithTitle()
+    public function testCreateWithTitle()
     {
         $title = 'foo';
 
@@ -23,7 +23,7 @@ class BreadcrumbsNodeTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testConstructorWithoutLink()
+    public function testCreateWithoutLink()
     {
         $title = 'foo';
 
@@ -35,7 +35,7 @@ class BreadcrumbsNodeTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testConstructorWithLink()
+    public function testCreateWithLink()
     {
         $title = 'foo';
         $link  = 'bar';
@@ -62,17 +62,66 @@ class BreadcrumbsNodeTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function testConstructorWithAttribute()
+    public function testHasAttributeWithExistingAttributeWillReturnTrue()
     {
-        $title = 'foo';
-        $link  = null;
+        $title      = 'foo';
+        $link       = null;
+        $attribute  = 'bar';
         $attributes = array(
-            'bar' => 'baz',
+            $attribute => 'baz',
         );
 
         $node = BreadcrumbsNode::create($title, $link, $attributes);
 
-        $this->assertTrue($node->hasAttribute('bar'));
-        $this->assertSame('baz', $node->getAttribute('bar'));
+        $this->assertTrue($node->hasAttribute($attribute));
+    }
+
+    /**
+     *
+     */
+    public function testHasAttributeWithNonExistingAttributeWillReturnFalse()
+    {
+        $title      = 'foo';
+        $link       = null;
+        $attribute  = 'bar';
+        $attributes = array();
+
+        $node = BreadcrumbsNode::create($title, $link, $attributes);
+
+        $this->assertFalse($node->hasAttribute($attribute));
+    }
+
+    /**
+     *
+     */
+    public function testGetAttributeWithExistingAttributeWillReturnExpected()
+    {
+        $title      = 'foo';
+        $link       = null;
+        $attribute  = 'bar';
+        $attributes = array(
+            $attribute => 'baz',
+        );
+
+        $node = BreadcrumbsNode::create($title, $link, $attributes);
+
+        $this->assertSame('baz', $node->getAttribute($attribute));
+    }
+
+    /**
+     *
+     */
+    public function testGetAttributeWithNonExistingAttributeWillThrowException()
+    {
+        $title      = 'foo';
+        $link       = null;
+        $attribute  = 'bar';
+        $attributes = array();
+
+        $node = BreadcrumbsNode::create($title, $link, $attributes);
+
+        $this->setExpectedException('\\DomainException', "Attribute '{$attribute}' not defined.");
+
+        $node->getAttribute($attribute);
     }
 }
