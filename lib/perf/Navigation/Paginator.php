@@ -2,7 +2,7 @@
 
 namespace perf\Navigation;
 
-use perf\Typing\Type;
+use perf\TypeValidation\Type;
 
 /**
  * This class helps computing the different page indexes (first, previous, next, etc.) related to pagination.
@@ -152,7 +152,6 @@ class Paginator
      *
      * @param int $page
      * @return int
-     * @throws \InvalidArgumentException
      */
     private function fixPage($page)
     {

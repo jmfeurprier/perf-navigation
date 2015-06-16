@@ -4,8 +4,8 @@
 	"license"     : "MIT",
 	"description" : "Allows to handle website navigation features like breadcrumbs and pagination.",
 	"require"     : {
-		"php"         : ">=5.3.3",
-		"perf/typing" : "~1.0"
+		"php"                  : ">=5.3.3",
+		"perf/type-validation" : "~2.0"
 	},
 	"require-dev": {
 		"ext-xdebug"                : "~2.1",
