@@ -54,7 +54,7 @@ class BreadcrumbsNode
     private function __construct($title, $link, array $attributes)
     {
         $this->title      = (string) $title;
-        $this->link       = is_null($link) ? null : (string) $link;
+        $this->link       = (null === $link) ? null : (string) $link;
         $this->attributes = $attributes;
     }
 
