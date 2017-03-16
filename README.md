@@ -1,4 +1,4 @@
 navigation
 ==========
 
-navigation package from perf, the PHP Extensible and Robust Framework.
+Allows to handle website navigation features like breadcrumbs and pagination.
