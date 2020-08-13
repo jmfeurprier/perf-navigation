@@ -2,31 +2,22 @@
 
 namespace perf\Navigation;
 
-/**
- *
- */
-class BreadcrumbsTest extends \PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
 
-    /**
-     *
-     */
-    protected function setUp()
+class BreadcrumbsTest extends TestCase
+{
+    private Breadcrumbs $breadcrumbs;
+
+    protected function setUp(): void
     {
         $this->breadcrumbs = new Breadcrumbs();
     }
 
-    /**
-     *
-     */
     public function testCountWithoutNodeWillReturnZero()
     {
         $this->assertSame(0, $this->breadcrumbs->count());
     }
 
-    /**
-     *
-     */
     public function testCountWithNodesWillReturnExpected()
     {
         $this->breadcrumbs->add('foo');
@@ -34,9 +25,6 @@ class BreadcrumbsTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(1, $this->breadcrumbs->count());
     }
 
-    /**
-     *
-     */
     public function testObjectIsIterable()
     {
         $this->breadcrumbs->add('foo');
@@ -47,15 +35,12 @@ class BreadcrumbsTest extends \PHPUnit_Framework_TestCase
         foreach ($this->breadcrumbs as $node) {
             ++$iterations;
 
-            $this->assertInstanceOf('\\perf\\Navigation\\BreadcrumbsNode', $node);
+            $this->assertInstanceOf(BreadcrumbsNode::class, $node);
         }
 
         $this->assertSame(2, $iterations);
     }
 
-    /**
-     *
-     */
     public function testObjectIsCountable()
     {
         $this->breadcrumbs->add('foo');
